@@ -15,7 +15,6 @@ jobs:
     - name: Decode SSH Key
       run: |
         echo "${{ secrets.EC2_KEY }}"
-        chmod 600 kel012.pem
 
     - name: Deploy using SSH
       uses: appleboy/ssh-action@v0.1.5
