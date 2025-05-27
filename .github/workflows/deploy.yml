@@ -10,20 +10,24 @@ jobs:
 
     steps:
     - name: Checkout Code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
-    - name: Decode SSH Key
-      run: |
-        echo "${{ secrets.EC2_KEY }}"
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+
+    - name: Install dependencies
+      run: npm install
 
     - name: Deploy using SSH
       uses: appleboy/ssh-action@v0.1.5
       with:
         host: ${{ secrets.EC2_HOST }}
         username: ec2-user
-        key: ./kel012.pem
+        key: ${{ secrets.EC2_KEY }}
         script: |
-          cd node-js-sample
-          git pull
+          cd /home/ec2-user/node-app
+          git pull origin master
           npm install
-          pm2 restart all || pm2 start index.js --name "node-app"
+          pm2 restart node-app || pm2 start index.js --name "node-app"
